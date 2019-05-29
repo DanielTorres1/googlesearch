@@ -15,7 +15,7 @@ WriteMakefile(
         'ExtUtils::MakeMaker' => '0',
     },
     BUILD_REQUIRES => {
-        'Test::More' => '0',
+        'HTML::Scrubber' => '0',
     },
     PREREQ_PM => {
         #'ABC'              => '1.6',
