@@ -3,7 +3,7 @@ abstract: unknown
 author:
   - 'Daniel Torres <daniel.torres@owasp.org>'
 build_requires:
-  Test::More: '0'
+  HTML::Scrubber: '0'
 configure_requires:
   ExtUtils::MakeMaker: '0'
 dynamic_config: 0

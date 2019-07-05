@@ -114,7 +114,7 @@ sub search  {
 
 
 my $results_list = `egrep -o '?q=http[[:print:]]{10,350}&amp;' google.html | egrep -v "webcache|accounts.google.com"`;
-system("mv google.html $log_file");
+system("cat google.html >> $log_file");
                         
 $results_list =~ s/\?|q=//g; 
 my @results_array = split("\n",$results_list);

@@ -13,13 +13,13 @@
 
 #     ABSTRACT_FROM => q[lib/googlesearch.pm]
 #     AUTHOR => [q[Daniel Torres <daniel.torres@owasp.org>]]
-#     BUILD_REQUIRES => { Test::More=>q[0] }
+#     BUILD_REQUIRES => { HTML::Scrubber=>q[0] }
 #     CONFIGURE_REQUIRES => { ExtUtils::MakeMaker=>q[0] }
 #     LICENSE => q[artistic_2]
 #     MIN_PERL_VERSION => q[5.006]
 #     NAME => q[googlesearch]
 #     PL_FILES => {  }
-#     PREREQ_PM => { Test::More=>q[0] }
+#     PREREQ_PM => { HTML::Scrubber=>q[0] }
 #     TEST_REQUIRES => {  }
 #     VERSION_FROM => q[lib/googlesearch.pm]
 #     clean => { FILES=>q[googlesearch-*] }
@@ -490,7 +490,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) 'author:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  - '\''Daniel Torres <daniel.torres@owasp.org>'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) 'build_requires:' >> META_new.yml
-	$(NOECHO) $(ECHO) '  Test::More: '\''0'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) '  HTML::Scrubber: '\''0'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) 'configure_requires:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  ExtUtils::MakeMaker: '\''0'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) 'dynamic_config: 1' >> META_new.yml
@@ -534,7 +534,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '   "prereqs" : {' >> META_new.json
 	$(NOECHO) $(ECHO) '      "build" : {' >> META_new.json
 	$(NOECHO) $(ECHO) '         "requires" : {' >> META_new.json
-	$(NOECHO) $(ECHO) '            "Test::More" : "0"' >> META_new.json
+	$(NOECHO) $(ECHO) '            "HTML::Scrubber" : "0"' >> META_new.json
 	$(NOECHO) $(ECHO) '         }' >> META_new.json
 	$(NOECHO) $(ECHO) '      },' >> META_new.json
 	$(NOECHO) $(ECHO) '      "configure" : {' >> META_new.json

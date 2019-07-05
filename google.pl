@@ -129,7 +129,7 @@ for (my $page =0 ; $page<=$total_pages-1;$page++)
 		}	
 		#print "salida $salida \n";
 		my $random_number = int(rand(50));
-		my $time_sleep=50+$random_number;
+		my $time_sleep=50+$random_number;		
 		print "\t\t[+] Durmiendo $time_sleep  segundos para evitar bloqueo de google \n";
 		sleep $time_sleep;
 }	

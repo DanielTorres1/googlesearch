@@ -22,7 +22,7 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "Test::More" : "0"
+            "HTML::Scrubber" : "0"
          }
       },
       "configure" : {
