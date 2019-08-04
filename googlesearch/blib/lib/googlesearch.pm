@@ -123,8 +123,11 @@ my $url_list = "";
 foreach (@results_array )
 {	
 	$_ =~ s/&amp;.*//s;	#delete everything after &amp;	
-	print "$_ \n";
-	$url_list = $url_list.";".Encode::decode('utf8', uri_unescape($_));	
+	
+	if (! ($_ =~ /support.google.com/m)){	 
+		print "$_ \n";	
+		$url_list = $url_list.";".Encode::decode('utf8', uri_unescape($_));	
+	}
 }
 
 $url_list =~ s/\n//g; 
