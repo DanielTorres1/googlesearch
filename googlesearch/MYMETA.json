@@ -22,7 +22,8 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "HTML::Scrubber" : "0"
+            "HTML::Scrubber" : "0",
+            "Text::Unidecode" : "0"
          }
       },
       "configure" : {
@@ -32,11 +33,12 @@
       },
       "runtime" : {
          "requires" : {
+            "Regexp::Common" : "0",
             "perl" : "5.006"
          }
       }
    },
    "release_status" : "stable",
    "version" : "1.1",
-   "x_serialization_backend" : "JSON::PP version 2.97001"
+   "x_serialization_backend" : "JSON::PP version 4.02"
 }

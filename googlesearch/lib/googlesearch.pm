@@ -124,7 +124,10 @@ foreach (@results_array )
 {	
 	$_ =~ s/&amp;.*//s;	#delete everything after &amp;	
 	
-	if (! ($_ =~ /support.google.com/m)){	 
+	if (! ($_ =~ /support.google.com/m)){	
+		$_ =~ s/%3F/?/g;
+		$_ =~ s/%3D/=/g;
+		$_ =~ s/%26/&/g; 
 		print "$_ \n";	
 		$url_list = $url_list.";".Encode::decode('utf8', uri_unescape($_));	
 	}
