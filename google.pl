@@ -7,7 +7,7 @@ use utf8;
 use Text::Unidecode;
 binmode STDOUT, ":encoding(UTF-8)";
 my %opts;
-getopts('t:o:p:l:h', \%opts);
+getopts('t:o:p:l:d:h', \%opts);
 
   
 	  
@@ -15,6 +15,7 @@ my $term = $opts{'t'} if $opts{'t'};
 my $total_pages = $opts{'p'} if $opts{'p'};
 my $log_file = $opts{'l'} if $opts{'l'};
 my $salida = $opts{'o'} if $opts{'o'};
+my $date = $opts{'d'} if $opts{'d'};
 #my $proxy = $opts{'r'} if $opts{'r'};
 
 my $banner = <<EOF;
@@ -32,6 +33,7 @@ sub usage {
   print "-t : Termino de busqueda \n";
   print "-o : Salida \n";
   print "-h : Ayuda \n";
+  print "-d : Date \n";
   print "-l : log file \n";
   #print "-r : 1/0 Usar o no proxy \n";
   print "google.pl -t 'site:gob.bo' -l google.html -r 0 \n";  
@@ -88,6 +90,9 @@ if ($total_pages eq "")
 {
 	print BLUE,"\t[+] Estimando resultados .. \n",RESET;
 	my $url = "https://www.google.com/search?output=search&sclient=psy-ab&q=$term&btnG=&gbv=1&filter=0&num=100";
+	if ( defined $date )
+		{$url.= "&tbs=qdr:$date";} 
+		
 	$response = $google_search->dispatch(url =>$url ,method => 'GET');
 	my $content = $response->content;
 
@@ -117,7 +122,7 @@ for (my $page =0 ; $page<=$total_pages-1;$page++)
 {
 		print "\t\t[+] pagina: $page \n";
 		# Results 1-100 
-		$list = $google_search->search(keyword => $term, country => "bo", start => $page*100, log => $log_file);
+		$list = $google_search->search(keyword => $term, country => "bo", start => $page*100, log => $log_file, date => $date);
 		my @list_array = split(";",$list);
 
 		foreach $url (@list_array)
