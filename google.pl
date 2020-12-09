@@ -9,7 +9,6 @@ binmode STDOUT, ":encoding(UTF-8)";
 my %opts;
 getopts('t:o:p:l:d:h', \%opts);
 
-  
 	  
 my $term = $opts{'t'} if $opts{'t'};
 my $total_pages = $opts{'p'} if $opts{'p'};
