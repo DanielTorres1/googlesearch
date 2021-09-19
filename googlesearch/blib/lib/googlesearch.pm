@@ -19,6 +19,8 @@ has proxy_host      => ( isa => 'Str', is => 'rw', default => '' );
 has proxy_port      => ( isa => 'Str', is => 'rw', default => '' );
 has proxy_user      => ( isa => 'Str', is => 'rw', default => '' );
 has proxy_pass      => ( isa => 'Str', is => 'rw', default => '' );
+has GOOGLE_URL      => ( isa => 'Str', is => 'rw', default => "https://pzhuqnayh7.execute-api.us-east-1.amazonaws.com/burpendpoint" );
+
 has browser  => ( isa => 'Object', is => 'rw', lazy => 1, builder => '_build_browser' );
 
 
@@ -31,19 +33,15 @@ sub search  {
 	my $lang = $options{lang};
 	my $filter = $options{filter};
 	my $start = $options{start};
-	my $country = $options{country};
 	my $log_file = $options{log};
 
 	my $proxy_host = $self->proxy_host;
+	my $GOOGLE_URL = $self->GOOGLE_URL;
 	my $tries=0;
 	SEARCH:
-	
-	if ($country ne "" )
-		{$country = ".$country";} 
 
 	my @results;                           
-	#https://www.google.com/search?client=firefox-b-d&q=site%3Agithub.com+intext%3Aempoderar.gob.bo 
-	my $url = "https://www.google.com$country/search??client=firefox-b-d&q=$keyword&btnG=&gbv=1&num=100&filter=0";
+	my $url = "$GOOGLE_URL/search?q=$keyword&num=100&filter=0";
 	if (defined $start )
 	{$url.= "&start=$start";}
 	
@@ -60,13 +58,13 @@ sub search  {
 
 	my $response = '';
 	my $status;
-	eval {
-		$response = $self->dispatch(url =>"https://www.google.com$country",method => 'GET');
-	};
+	#eval {
+		#$response = $self->dispatch(url =>$GOOGLE_URL,method => 'GET');
+#	};
 
-	if ($@)
-		{warn $@;} 
-	sleep 5;
+	#if ($@)
+		#{warn $@;} 
+	#sleep 5;
 
 	eval {
 		$response = $self->dispatch(url =>$url,method => 'GET');	
@@ -112,11 +110,11 @@ sub search  {
 	print SALIDA $final_content;
 	close (SALIDA);
 
-
-my $results_list = `egrep -o '?q=http[[:print:]]{10,350}&amp;' google.html | egrep -v "webcache|accounts.google.com"`;
+#<a href="https://www.segip.gob.bo/author/fsaravia/page/2/">
+my $results_list = `egrep -o '<a href="http[[:print:]]{10,180}">' google.html | egrep -v "webcache|accounts.google.com" | cut -d " " -f 1-2`;
 system("mv google.html $log_file");
                         
-$results_list =~ s/\?|q=//g; 
+$results_list =~ s/<a href="|">//g; 
 my @results_array = split("\n",$results_list);
 #print Dumper @results_array ;
 my $url_list = "";
@@ -137,64 +135,6 @@ $url_list =~ s/\n//g;
 return $url_list;
 }    
 
-
-sub isIndexed  {
-	my $self = shift;
-	my %options = @_;
-	
-	my $keyword = $options{ keyword };
-
-	my $tries=0;
-
-	my @results;                            
-	my $url = "https://www.google.com.uy/search?output=search&sclient=psy-ab&q=$keyword&btnG=&gbv=1&num=100";
-
-	#print "going to www.google.com \n";
-
-	my $response = '';
-	eval {
-		$response = $self->dispatch(url =>"https://www.google.com.uy",method => 'GET');
-		my $status = $response->status_line;
-	if($status =~ /504/m){
-		if ($tries == 3)
-			{die;}
-	$tries++;
-	goto CHOOSE;		 
-	}
-	};
-
-	if ($@)
-		{warn $@;} 
-	sleep 5;
-
-	eval {
-		$response = $self->dispatch(url =>$url,method => 'GET');
-	};
-
-	sleep 5;
-	
-	my $content = $response->content;
-	
-	open (SALIDA,">google.html") || die "ERROR: No puedo abrir el fichero google.html\n";
-	print SALIDA $content;
-	close (SALIDA);
-	
-	
-	if($content =~ /unusual traffic/){
-		print "UPPS. IP BLOCKED";	
-		die;		
-	}
-		
-	if($content =~ /No se han encontrado resultados/){
-		return "NO esta indexado";	
-	}
-	else
-	{
-		return "SI esta indexado";	
-	}
-	
-
-}    
 
 
 

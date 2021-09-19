@@ -9,7 +9,7 @@ binmode STDOUT, ":encoding(UTF-8)";
 my %opts;
 getopts('t:o:p:l:d:h', \%opts);
 
-	  
+my $GOOGLE_URL = "https://pzhuqnayh7.execute-api.us-east-1.amazonaws.com/burpendpoint";
 my $term = $opts{'t'} if $opts{'t'};
 my $total_pages = $opts{'p'} if $opts{'p'};
 my $log_file = $opts{'l'} if $opts{'l'};
@@ -88,7 +88,7 @@ my $google_search = googlesearch->new();
 if ($total_pages eq "")
 {
 	print BLUE,"\t[+] Estimando resultados .. \n",RESET;
-	my $url = "https://www.google.com/search?output=search&sclient=psy-ab&q=$term&btnG=&gbv=1&filter=0&num=100";
+	my $url = "$GOOGLE_URL/search?q=$term&filter=0&num=100";
 	if ( defined $date )
 		{$url.= "&tbs=qdr:$date";} 
 		
@@ -121,7 +121,7 @@ for (my $page =0 ; $page<=$total_pages-1;$page++)
 {
 		print "\t\t[+] pagina: $page \n";
 		# Results 1-100 
-		$list = $google_search->search(keyword => $term, country => "bo", start => $page*100, log => $log_file, date => $date);
+		$list = $google_search->search(keyword => $term, start => $page*100, log => $log_file, date => $date);
 		my @list_array = split(";",$list);
 
 		foreach $url (@list_array)
@@ -131,11 +131,8 @@ for (my $page =0 ; $page<=$total_pages-1;$page++)
 			print SALIDA $url,"\n" ;
 			close (SALIDA);
 		}	
-		#print "salida $salida \n";
-		my $random_number = int(rand(40));
-		my $time_sleep=30+$random_number;		
-		print "\t\t[+] Durmiendo $time_sleep  segundos para evitar bloqueo de google \n";
-		sleep $time_sleep;
+
+		sleep 1;
 }	
 
 #print "\t[+] Ordenando lista \n";
