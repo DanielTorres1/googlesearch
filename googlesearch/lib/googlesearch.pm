@@ -111,7 +111,7 @@ sub search  {
 	close (SALIDA);
 
 #<a href="https://www.segip.gob.bo/author/fsaravia/page/2/">
-my $results_list = `egrep -o '<a href="http[[:print:]]{10,180}">' google.html | egrep -v "webcache|accounts.google.com" | cut -d " " -f 1-2`;
+my $results_list = `egrep -o '<a href="http[[:print:]]{10,180}">' google.html | egrep -v "webcache|google.com" | cut -d " " -f 1-2`;
 system("mv google.html $log_file");
                         
 $results_list =~ s/<a href="|">//g; 
@@ -122,7 +122,7 @@ foreach (@results_array )
 {	
 	$_ =~ s/&amp;.*//s;	#delete everything after &amp;	
 	
-	if (! ($_ =~ /support.google.com/m)){	
+	if (! ($_ =~ /google.com/m)){	
 		$_ =~ s/%3F/?/g;
 		$_ =~ s/%3D/=/g;
 		$_ =~ s/%26/&/g; 
