@@ -19,7 +19,7 @@ has proxy_host      => ( isa => 'Str', is => 'rw', default => '' );
 has proxy_port      => ( isa => 'Str', is => 'rw', default => '' );
 has proxy_user      => ( isa => 'Str', is => 'rw', default => '' );
 has proxy_pass      => ( isa => 'Str', is => 'rw', default => '' );
-has GOOGLE_URL      => ( isa => 'Str', is => 'rw', default => "https://pzhuqnayh7.execute-api.us-east-1.amazonaws.com/burpendpoint" );
+has GOOGLE_URL      => ( isa => 'Str', is => 'rw', default => "https://ipt5gxa9dh.execute-api.us-east-1.amazonaws.com/googleProxy" );
 
 has browser  => ( isa => 'Object', is => 'rw', lazy => 1, builder => '_build_browser' );
 
@@ -122,7 +122,7 @@ foreach (@results_array )
 {	
 	$_ =~ s/&amp;.*//s;	#delete everything after &amp;	
 	
-	if (! ($_ =~ /support.google.com/m)){	
+	if (! ($_ =~ /google.com/m)){	
 		$_ =~ s/%3F/?/g;
 		$_ =~ s/%3D/=/g;
 		$_ =~ s/%26/&/g; 
