@@ -15,6 +15,7 @@ my $total_pages = $opts{'p'} if $opts{'p'};
 my $log_file = $opts{'l'} if $opts{'l'};
 my $salida = $opts{'o'} if $opts{'o'};
 my $date = $opts{'d'} if $opts{'d'};
+my $debug=1;
 #my $proxy = $opts{'r'} if $opts{'r'};
 
 my $banner = <<EOF;
@@ -95,19 +96,19 @@ if ($total_pages eq "")
 	$response = $google_search->dispatch(url =>$url ,method => 'GET');
 	my $content = $response->content;
 
-	open (SALIDA,">>googleRes.html") || die "ERROR: No puedo abrir el fichero googleRes.html \n";
+	open (SALIDA,">>googleCountRes.html") || die "ERROR: No puedo abrir el fichero googleCountRes.html \n";
 	print SALIDA $content,"\n" ;
 	close (SALIDA);
 		
-    $noresult=`egrep -io '"No se han encontrado resultados"|"did not match any documents"' googleRes.html`;    
+    $noresult=`egrep -io '"No se han encontrado resultados"|"did not match any documents"' googleCountRes.html`;    
     if ($noresult eq "")
 	{
-		$total_pages=`egrep -o ';start=[[:digit:]]{3,4}&' googleRes.html | sort | uniq | wc -l`+1; 
+		$total_pages=`egrep -o ';start=[[:digit:]]{3,4}&' googleCountRes.html | sort | uniq | wc -l`+1; 
 		#print "total_pages $total_pages \n";
 	}
 	else
 	{print "No hay resultados en google para esa busqueda"; die;}
-	system("rm googleRes.html");
+	#system("rm googleCountRes.html");
 	
 }
 
@@ -127,6 +128,8 @@ for (my $page =0 ; $page<=$total_pages-1;$page++)
 		foreach $url (@list_array)
 		{
 			$url =~ s/\n//g; 
+			
+			print "url $url" if ($debug);
 			open (SALIDA,">>$salida") || die "ERROR: No puedo abrir el fichero $salida\n";
 			print SALIDA $url,"\n" ;
 			close (SALIDA);
