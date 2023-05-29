@@ -111,7 +111,9 @@ sub search  {
 	close (SALIDA);
 
 #<a href="https://www.segip.gob.bo/author/fsaravia/page/2/">
+system("sed -i 's|/url?esrc=s&amp;q=&amp;rct=j&amp;sa=U&amp;url=||g' google.html");
 my $results_list = `egrep -o '<a href="http[[:print:]]{10,180}">' google.html | egrep -v "webcache|google.com" | cut -d " " -f 1-2`;
+#results_list=`printf '%b' "${results_list//%/\\x}"`
 system("mv google.html $log_file");
                         
 $results_list =~ s/<a href="|">//g; 
