@@ -95,6 +95,7 @@ if ($total_pages eq "")
 		
 	$response = $google_search->dispatch(url =>$url ,method => 'GET');
 	my $content = $response->content;
+	print($content);
 
 	open (SALIDA,">>googleCountRes.html") || die "ERROR: No puedo abrir el fichero googleCountRes.html \n";
 	print SALIDA $content,"\n" ;
