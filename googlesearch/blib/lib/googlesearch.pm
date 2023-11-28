@@ -112,7 +112,12 @@ sub search  {
 
 #<a href="https://www.segip.gob.bo/author/fsaravia/page/2/">
 system("sed -i 's|/url?esrc=s&amp;q=&amp;rct=j&amp;sa=U&amp;url=||g' google.html");
-my $results_list = `egrep -o '<a href="http[[:print:]]{10,180}">' google.html | egrep -v "webcache|google.com" | cut -d " " -f 1-2`;
+#my $results_list = `egrep -o '<a href="http[[:print:]]{10,180}">' google.html | egrep -v "webcache|google.com" | cut -d " " -f 1-2`;
+#my $results_list = `grep -o 'http[s]\\?://[^"]*' google3.html | grep -v google | cut -d '&' -f1 | sed 's/\/amp//g'`;
+my $results_list = `grep -o 'http[s]\\?://[^"]*' google3.html | grep -v google | cut -d '&' -f1 | sed 's|/amp||g'`;
+
+
+
 #results_list=`printf '%b' "${results_list//%/\\x}"`
 system("mv google.html $log_file");
                         
