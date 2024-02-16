@@ -100,7 +100,8 @@ sub search  {
 
 #<a href="https://www.segip.gob.bo/author/fsaravia/page/2/">
 system("sed -i 's|/url?esrc=s&amp;q=&amp;rct=j&amp;sa=U&amp;url=||g' google.html");
-my $results_list = `grep -oP 'href="\K[^&]*' google.html | egrep -v 'google|search|etprefs|sa=X'`;
+#my $results_list = `grep -oP 'href="\K[^&]*' google.html | egrep -v 'google|search|etprefs|sa=X'`;
+my $results_list = qx{grep -oP 'href="\\K[^&]*' google.html | egrep -v 'google|search|etprefs|sa=X'};
 
 system("mv google.html $log_file");
                         
