@@ -56,6 +56,7 @@ sub search  {
 	my $status;
 
 	eval {
+		print "url ($url)\n";	
 		$response = $self->dispatch(url =>$url,method => 'GET');	
 	};
 
