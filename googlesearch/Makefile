@@ -1,7 +1,7 @@
 # This Makefile is for the googlesearch extension to perl.
 #
 # It was generated automatically by MakeMaker version
-# 7.64 (Revision: 76400) from the contents of
+# 7.70 (Revision: 77000) from the contents of
 # Makefile.PL. Don't edit this file, edit Makefile.PL instead.
 #
 #       ANY CHANGES MADE HERE WILL BE LOST!
@@ -48,12 +48,12 @@ LIBC = /lib/x86_64-linux-gnu/libc.so.6
 LIB_EXT = .a
 OBJ_EXT = .o
 OSNAME = linux
-OSVERS = 4.19.0
+OSVERS = 6.1.0
 RANLIB = :
-SITELIBEXP = /usr/local/share/perl/5.36.0
-SITEARCHEXP = /usr/local/lib/x86_64-linux-gnu/perl/5.36.0
+SITELIBEXP = /usr/local/share/perl/5.38.2
+SITEARCHEXP = /usr/local/lib/x86_64-linux-gnu/perl/5.38.2
 SO = so
-VENDORARCHEXP = /usr/lib/x86_64-linux-gnu/perl5/5.36
+VENDORARCHEXP = /usr/lib/x86_64-linux-gnu/perl5/5.38
 VENDORLIBEXP = /usr/share/perl5
 
 
@@ -86,17 +86,17 @@ PREFIX = $(SITEPREFIX)
 PERLPREFIX = /usr
 SITEPREFIX = /usr/local
 VENDORPREFIX = /usr
-INSTALLPRIVLIB = /usr/share/perl/5.36
+INSTALLPRIVLIB = /usr/share/perl/5.38
 DESTINSTALLPRIVLIB = $(DESTDIR)$(INSTALLPRIVLIB)
-INSTALLSITELIB = /usr/local/share/perl/5.36.0
+INSTALLSITELIB = /usr/local/share/perl/5.38.2
 DESTINSTALLSITELIB = $(DESTDIR)$(INSTALLSITELIB)
 INSTALLVENDORLIB = /usr/share/perl5
 DESTINSTALLVENDORLIB = $(DESTDIR)$(INSTALLVENDORLIB)
-INSTALLARCHLIB = /usr/lib/x86_64-linux-gnu/perl/5.36
+INSTALLARCHLIB = /usr/lib/x86_64-linux-gnu/perl/5.38
 DESTINSTALLARCHLIB = $(DESTDIR)$(INSTALLARCHLIB)
-INSTALLSITEARCH = /usr/local/lib/x86_64-linux-gnu/perl/5.36.0
+INSTALLSITEARCH = /usr/local/lib/x86_64-linux-gnu/perl/5.38.2
 DESTINSTALLSITEARCH = $(DESTDIR)$(INSTALLSITEARCH)
-INSTALLVENDORARCH = /usr/lib/x86_64-linux-gnu/perl5/5.36
+INSTALLVENDORARCH = /usr/lib/x86_64-linux-gnu/perl5/5.38
 DESTINSTALLVENDORARCH = $(DESTDIR)$(INSTALLVENDORARCH)
 INSTALLBIN = /usr/bin
 DESTINSTALLBIN = $(DESTDIR)$(INSTALLBIN)
@@ -122,16 +122,16 @@ INSTALLSITEMAN3DIR = /usr/local/man/man3
 DESTINSTALLSITEMAN3DIR = $(DESTDIR)$(INSTALLSITEMAN3DIR)
 INSTALLVENDORMAN3DIR = /usr/share/man/man3
 DESTINSTALLVENDORMAN3DIR = $(DESTDIR)$(INSTALLVENDORMAN3DIR)
-PERL_LIB = /usr/share/perl/5.36
-PERL_ARCHLIB = /usr/lib/x86_64-linux-gnu/perl/5.36
-PERL_ARCHLIBDEP = /usr/lib/x86_64-linux-gnu/perl/5.36
+PERL_LIB = /usr/share/perl/5.38
+PERL_ARCHLIB = /usr/lib/x86_64-linux-gnu/perl/5.38
+PERL_ARCHLIBDEP = /usr/lib/x86_64-linux-gnu/perl/5.38
 LIBPERL_A = libperl.a
 FIRST_MAKEFILE = Makefile
 MAKEFILE_OLD = Makefile.old
 MAKE_APERL_FILE = Makefile.aperl
 PERLMAINCC = $(CC)
-PERL_INC = /usr/lib/x86_64-linux-gnu/perl/5.36/CORE
-PERL_INCDEP = /usr/lib/x86_64-linux-gnu/perl/5.36/CORE
+PERL_INC = /usr/lib/x86_64-linux-gnu/perl/5.38/CORE
+PERL_INCDEP = /usr/lib/x86_64-linux-gnu/perl/5.38/CORE
 PERL = "/usr/bin/perl"
 FULLPERL = "/usr/bin/perl"
 ABSPERL = $(PERL)
@@ -146,9 +146,9 @@ PERM_DIR = 755
 PERM_RW = 644
 PERM_RWX = 755
 
-MAKEMAKER   = /usr/share/perl/5.36/ExtUtils/MakeMaker.pm
-MM_VERSION  = 7.64
-MM_REVISION = 76400
+MAKEMAKER   = /usr/share/perl/5.38/ExtUtils/MakeMaker.pm
+MM_VERSION  = 7.70
+MM_REVISION = 77000
 
 # FULLEXT = Pathname for extension directory (eg Foo/Bar/Oracle).
 # BASEEXT = Basename part of FULLEXT. May be just equal FULLEXT. (eg Oracle)
@@ -198,7 +198,7 @@ TO_INST_PM = lib/googlesearch.pm
 
 
 # --- MakeMaker platform_constants section:
-MM_Unix_VERSION = 7.64
+MM_Unix_VERSION = 7.70
 PERL_MALLOC_DEF = -DPERL_EXTMALLOC_DEF -Dmalloc=Perl_malloc -Dfree=Perl_mfree -Drealloc=Perl_realloc -Dcalloc=Perl_calloc
 
 
@@ -496,7 +496,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) 'configure_requires:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  ExtUtils::MakeMaker: '\''0'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) 'dynamic_config: 1' >> META_new.yml
-	$(NOECHO) $(ECHO) 'generated_by: '\''ExtUtils::MakeMaker version 7.64, CPAN::Meta::Converter version 2.150010'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) 'generated_by: '\''ExtUtils::MakeMaker version 7.70, CPAN::Meta::Converter version 2.150010'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) 'license: artistic_2' >> META_new.yml
 	$(NOECHO) $(ECHO) 'meta-spec:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  url: http://module-build.sourceforge.net/META-spec-v1.4.html' >> META_new.yml
@@ -519,7 +519,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '      "Daniel Torres <daniel.torres@owasp.org>"' >> META_new.json
 	$(NOECHO) $(ECHO) '   ],' >> META_new.json
 	$(NOECHO) $(ECHO) '   "dynamic_config" : 1,' >> META_new.json
-	$(NOECHO) $(ECHO) '   "generated_by" : "ExtUtils::MakeMaker version 7.64, CPAN::Meta::Converter version 2.150010",' >> META_new.json
+	$(NOECHO) $(ECHO) '   "generated_by" : "ExtUtils::MakeMaker version 7.70, CPAN::Meta::Converter version 2.150010",' >> META_new.json
 	$(NOECHO) $(ECHO) '   "license" : [' >> META_new.json
 	$(NOECHO) $(ECHO) '      "artistic_2"' >> META_new.json
 	$(NOECHO) $(ECHO) '   ],' >> META_new.json
@@ -555,7 +555,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '   },' >> META_new.json
 	$(NOECHO) $(ECHO) '   "release_status" : "stable",' >> META_new.json
 	$(NOECHO) $(ECHO) '   "version" : "1.1",' >> META_new.json
-	$(NOECHO) $(ECHO) '   "x_serialization_backend" : "JSON::PP version 4.07"' >> META_new.json
+	$(NOECHO) $(ECHO) '   "x_serialization_backend" : "JSON::PP version 4.16"' >> META_new.json
 	$(NOECHO) $(ECHO) '}' >> META_new.json
 	-$(NOECHO) $(MV) META_new.json $(DISTVNAME)/META.json
 
@@ -789,7 +789,7 @@ $(FIRST_MAKEFILE) : Makefile.PL $(CONFIGDEP)
 # --- MakeMaker makeaperl section ---
 MAP_TARGET    = perl
 FULLPERL      = "/usr/bin/perl"
-MAP_PERLINC   = "-Iblib/arch" "-Iblib/lib" "-I/usr/lib/x86_64-linux-gnu/perl/5.36" "-I/usr/share/perl/5.36"
+MAP_PERLINC   = "-Iblib/arch" "-Iblib/lib" "-I/usr/lib/x86_64-linux-gnu/perl/5.38" "-I/usr/share/perl/5.38"
 
 $(MAP_TARGET) :: $(MAKE_APERL_FILE)
 	$(MAKE) $(USEMAKEFILE) $(MAKE_APERL_FILE) $@
@@ -847,7 +847,7 @@ ppd :
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> googlesearch.ppd
 	$(NOECHO) $(ECHO) '        <PERLCORE VERSION="5,006,0,0" />' >> googlesearch.ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Regexp::Common" />' >> googlesearch.ppd
-	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-gnu-thread-multi-5.36" />' >> googlesearch.ppd
+	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-gnu-thread-multi-5.38" />' >> googlesearch.ppd
 	$(NOECHO) $(ECHO) '        <CODEBASE HREF="" />' >> googlesearch.ppd
 	$(NOECHO) $(ECHO) '    </IMPLEMENTATION>' >> googlesearch.ppd
 	$(NOECHO) $(ECHO) '</SOFTPKG>' >> googlesearch.ppd

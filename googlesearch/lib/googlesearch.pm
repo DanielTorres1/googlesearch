@@ -52,19 +52,8 @@ sub search  {
 		{$url.= "&hl=$lang";}
 
 
-	#print "url $url \n"; 
-
-	#print "going to www.google.com \n";
-
 	my $response = '';
 	my $status;
-	#eval {
-		#$response = $self->dispatch(url =>$GOOGLE_URL,method => 'GET');
-#	};
-
-	#if ($@)
-		#{warn $@;} 
-	#sleep 5;
 
 	eval {
 		$response = $self->dispatch(url =>$url,method => 'GET');	
@@ -99,8 +88,7 @@ sub search  {
 	$scrubber->rules(        
          a => {
 			 href => 1 , 
-            class => 1,           
-            #href => qr{^((?!$domain).)*$}i,
+            class => 1,  
         },     
     );
     
@@ -112,30 +100,17 @@ sub search  {
 
 #<a href="https://www.segip.gob.bo/author/fsaravia/page/2/">
 system("sed -i 's|/url?esrc=s&amp;q=&amp;rct=j&amp;sa=U&amp;url=||g' google.html");
-#my $results_list = `egrep -o '<a href="http[[:print:]]{10,180}">' google.html | egrep -v "webcache|google.com" | cut -d " " -f 1-2`;
-#my $results_list = `grep -o 'http[s]\\?://[^"]*' google3.html | grep -v google | cut -d '&' -f1 | sed 's/\/amp//g'`;
-my $results_list = `grep -o 'http[s]\\?://[^"]*' google3.html | grep -v google | cut -d '&' -f1 | sed 's|/amp||g'`;
+my $results_list = `grep -oP 'href="\K[^&]*' google.html | egrep -v 'google|search|etprefs|sa=X'`
 
-
-
-#results_list=`printf '%b' "${results_list//%/\\x}"`
 system("mv google.html $log_file");
                         
-$results_list =~ s/<a href="|">//g; 
 my @results_array = split("\n",$results_list);
 #print Dumper @results_array ;
 my $url_list = "";
 foreach (@results_array )
 {	
-	$_ =~ s/&amp;.*//s;	#delete everything after &amp;	
-	
-	if (! ($_ =~ /google.com/m)){	
-		$_ =~ s/%3F/?/g;
-		$_ =~ s/%3D/=/g;
-		$_ =~ s/%26/&/g; 
-		print "$_ \n";	
-		$url_list = $url_list.";".Encode::decode('utf8', uri_unescape($_));	
-	}
+	print "$_ \n";	
+	$url_list = $url_list.";".Encode::decode('utf8', uri_unescape($_));	
 }
 
 $url_list =~ s/\n//g; 

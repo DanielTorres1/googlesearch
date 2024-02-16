@@ -31,12 +31,12 @@ sub usage {
   print $banner;
   print "Uso:  \n";  
   print "-t : Termino de busqueda \n";
-  print "-o : Salida \n";
+  print "-o : Salida \n"; #lista urls
   print "-h : Ayuda \n";
   print "-d : Date \n";
   print "-l : log file \n";
   #print "-r : 1/0 Usar o no proxy \n";
-  print "google.pl -t 'site:gob.bo' -l google.html -r 0 \n";  
+  print "google.pl -t 'site:gob.bo' -l google2.html -o lista.txt \n";  
   
 }	
 
