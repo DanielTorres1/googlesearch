@@ -68,7 +68,7 @@ sub search  {
 	$status = $response->status_line;
 	print "status ($status)\n";	
 	
-	if($content =~ /Name or service not known|429 Too Many Requests/m){
+	if ($content =~ /Name or service not known/m || $status =~ /Too Many Requests/m) {
 	   if ($tries == 3)
 			{die;}
 	   $tries++;
