@@ -69,7 +69,7 @@ sub search  {
 	print "status ($status)\n";	
 	
 	if ($content =~ /Name or service not known/m || $status =~ /Too Many Requests/m) {
-	   if ($tries == 5)
+	   if ($tries == 7)
 			{die;}
 	   $tries++;
 	   goto SEARCH;		 
