@@ -96,7 +96,7 @@ sub search  {
 	my $final_content = $scrubber->scrub($content);	
 
 	open (SALIDA,">google.html") || die "ERROR: No puedo abrir el fichero google.html\n";
-	print SALIDA $final_content;
+	print SALIDA $content;
 	close (SALIDA);
 
 #<a href="https://www.segip.gob.bo/author/fsaravia/page/2/">
