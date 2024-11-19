@@ -41,7 +41,7 @@ sub search  {
 	SEARCH:
 
 	my @results;                           
-	my $url = "$GOOGLE_URL/search?q=$keyword&num=100&filter=0";
+	my $url = "$GOOGLE_URL/search?q=$keyword&oq=$keyword&num=100&filter=0&sourceid=chrome&ie=UTF-8";
 	if (defined $start )
 	{$url.= "&start=$start";}
 	
