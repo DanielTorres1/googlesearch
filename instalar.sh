@@ -21,13 +21,8 @@ EOF
 print_ascii_art
 
 echo -e "$OKBLUE [+] Instalando Google search $RESET" 
-cpanm Moose
-cd googlesearch
-sudo cpan .
-cd ..
 
-
-sudo cp google.pl /usr/bin/google.pl
-sudo chmod a+x /usr/bin/google.pl
+sudo cp googlesearch-client /usr/bin/googlesearch-client
+sudo chmod a+x /usr/bin/googlesearch-client
 
 
