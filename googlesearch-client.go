@@ -84,6 +84,10 @@ func main() {
 			os.Exit(1)
 		}
 
+		for _, url := range urls {
+			fmt.Println(url)
+		}
+
 		// Check for next page
 		hasNextPage, err := checkNextPage(*logFile)
 		if err != nil {

@@ -22,6 +22,7 @@ print_ascii_art
 
 echo -e "$OKBLUE [+] Instalando Google search $RESET" 
 
+go build -o googlesearch-client googlesearch-client.go
 sudo cp googlesearch-client /usr/bin/googlesearch-client
 sudo chmod a+x /usr/bin/googlesearch-client
 

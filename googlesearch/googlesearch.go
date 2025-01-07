@@ -10,8 +10,6 @@ import (
 	"regexp"
 	"strings"
 	"time"
-
-	"golang.org/x/net/proxy"
 )
 
 // SearchClient represents the Google search client configuration
@@ -57,49 +55,19 @@ func (c *SearchClient) SetProxy(host, port, user, pass string) {
 	c.ProxyPass = pass
 }
 
-// buildClient initializes the HTTP client with proxy settings if configured
+// buildClient initializes the HTTP client
 func (c *SearchClient) buildClient() error {
-	if c.httpClient != nil {
-		return nil
-	}
+    if c.httpClient != nil {
+        return nil
+    }
 
-	transport := &http.Transport{}
+    c.httpClient = &http.Client{
+        Transport: &http.Transport{},
+        Timeout:   10 * time.Second,
+    }
 
-	if c.ProxyHost != "" {
-		if c.ProxyHost == "tor" {
-			// Configure for Tor
-			dialer, err := proxy.SOCKS5("tcp", "localhost:9050", nil, proxy.Direct)
-			if err != nil {
-				return fmt.Errorf("error creating tor proxy dialer: %v", err)
-			}
-			transport.Dial = dialer.Dial
-		} else {
-			// Configure standard proxy
-			proxyURL := &url.URL{}
-			if c.ProxyUser != "" && c.ProxyPass != "" {
-				proxyURL = &url.URL{
-					Scheme: "http",
-					User:   url.UserPassword(c.ProxyUser, c.ProxyPass),
-					Host:   fmt.Sprintf("%s:%s", c.ProxyHost, c.ProxyPort),
-				}
-			} else {
-				proxyURL = &url.URL{
-					Scheme: "http",
-					Host:   fmt.Sprintf("%s:%s", c.ProxyHost, c.ProxyPort),
-				}
-			}
-			transport.Proxy = http.ProxyURL(proxyURL)
-		}
-	}
-
-	c.httpClient = &http.Client{
-		Transport: transport,
-		Timeout:   10 * time.Second,
-	}
-
-	return nil
+    return nil
 }
-
 // Search performs a Google search with the specified options
 func (c *SearchClient) Search(opts SearchOptions) (string, error) {
 	if err := c.buildClient(); err != nil {
@@ -119,9 +87,10 @@ func (c *SearchClient) Search(opts SearchOptions) (string, error) {
 		searchURL += "&hl=" + opts.Lang
 	}
 
+	fmt.Println("searchURL:", searchURL)
 	maxRetries := 7
 	for tries := 0; tries < maxRetries; tries++ {
-		content, err := c.makeRequest(searchURL)
+		content, err := c.makeRequest(searchURL)		
 		if err != nil {
 			if tries == maxRetries-1 {
 				return "", err
@@ -180,32 +149,40 @@ func (c *SearchClient) makeRequest(url string) (string, error) {
 }
 
 func extractURLs(content string) []string {
-	re := regexp.MustCompile(`href="(https?://[^"&]*)"`)
-	matches := re.FindAllStringSubmatch(content, -1)
-
-	var urls []string
-	seen := make(map[string]bool)
-
-	for _, match := range matches {
-		if len(match) < 2 {
-			continue
-		}
-		
-		urlStr := match[1]
-		if strings.Contains(urlStr, "google.") || strings.Contains(urlStr, "search?") {
-			continue
-		}
-
-		if !seen[urlStr] {
-			seen[urlStr] = true
-			decodedURL, err := url.QueryUnescape(urlStr)
-			if err == nil {
-				urls = append(urls, decodedURL)
-			}
-		}
-	}
-
-	return urls
+    // Regular expression pattern for valid URLs, excluding JavaScript and unwanted patterns
+    urlPattern := regexp.MustCompile(`https?://(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)`)
+    
+    // Find all matches in the content
+    matches := urlPattern.FindAllString(content, -1)
+    
+    // Create a map to store unique URLs
+    uniqueURLs := make(map[string]bool)
+    
+    // Create a slice to store the final result
+    var results []string
+    
+    // Process each match
+    for _, match := range matches {
+        // Clean up the URL
+        url := strings.TrimRight(match, ".,!?:;'\"&amp")
+        
+        // Skip if URL contains unwanted patterns
+        if strings.Contains(url, "google.com") ||
+           strings.Contains(url, "gstatic.com") ||
+           strings.Contains(url, "accounts.google") ||
+           strings.Contains(url, "support.google") ||
+           strings.Contains(url, "policies.google") {
+            continue
+        }
+        
+        // Add URL to results if we haven't seen it before
+        if !uniqueURLs[url] {
+            uniqueURLs[url] = true
+            results = append(results, url)
+        }
+    }
+    
+    return results
 }
 
 func getRandomUserAgent() string {
