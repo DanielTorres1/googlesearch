@@ -133,6 +133,7 @@ func (c *SearchClient) makeRequest(url string) (string, error) {
 	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 	req.Header.Set("Accept-Language", "en-US,en;q=0.5")
 	req.Header.Set("Connection", "keep-alive")
+	req.Header.Set("Cookie", "AEC=AVcja2e0osgVZ2MvTTHJYpLp4yhID9N0TRFsReOdxd5tCSFUs7NPTSRuZQ; NID=521=NQPOecq6prPLWgFgmx7jyla-RUBYpeKwu6oNkRIf6m9rusePsivbTTJ_f9l4cNw2SlRKcJBQBr_LayeW8ruNTP18Qb7KgkTa5yMmcns5yFZwybs1FdxMmLZ9Am9Ae9bs9yKWsuQBQV84bO_fokHv0Sqn6IbXAsng725pMDWGFbJC7Sb02xzd8Ahl0RE4lLGavVeV1G85n7zGbnFNKqkeVkbVZXm8zkwoNv-mKcqea3_oo9eIikQb7w1ZeeECNMv-e-duQio")
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
