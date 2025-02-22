@@ -172,7 +172,8 @@ func extractURLs(content string) []string {
            strings.Contains(url, "gstatic.com") ||
            strings.Contains(url, "accounts.google") ||
            strings.Contains(url, "support.google") ||
-           strings.Contains(url, "policies.google") {
+		   strings.Contains(url, "w3.org") ||
+           strings.Contains(url, "policies.google") {			
             continue
         }
         
