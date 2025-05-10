@@ -18,8 +18,8 @@ Google search
 
 Autor: Daniel Torres Sandi
 `
-
-const googleURL = "https://ipt5gxa9dh.execute-api.us-east-1.amazonaws.com/googleProxy"
+//const googleURL = "https://ipt5gxa9dh.execute-api.us-east-1.amazonaws.com/googleProxy"
+const googleURL = "https://google.com"
 
 var (
 	term     = flag.String("t", "", "Search term")

@@ -42,7 +42,6 @@ var userAgents = []string{
 // NewSearchClient creates a new instance of SearchClient with default values
 func NewSearchClient() *SearchClient {
 	return &SearchClient{
-		GoogleURL: "https://h04ix0nbs5.execute-api.us-east-1.amazonaws.com/googleProxy",
 		UserAgent: getRandomUserAgent(),
 	}
 }
@@ -74,7 +73,7 @@ func (c *SearchClient) Search(opts SearchOptions) (string, error) {
 		return "", err
 	}
 
-	searchURL := fmt.Sprintf("%s/search?q=%s&oq=%s&num=100&filter=0&sourceid=chrome&ie=UTF-8",
+	searchURL := fmt.Sprintf("%s/search?q=%s&oq=%s&num=100&filter=0&sourceid=chrome&ie=UTF-8&sca_esv=586bf82e9e87a87a&emsg=SG_REL&sei=UdMeaPmxOIDk5NoP39HA-QM",
 		c.GoogleURL, url.QueryEscape(opts.Keyword), url.QueryEscape(opts.Keyword))
 
 	if opts.Start != "" {
@@ -87,7 +86,7 @@ func (c *SearchClient) Search(opts SearchOptions) (string, error) {
 		searchURL += "&hl=" + opts.Lang
 	}
 
-	fmt.Println("searchURL:", searchURL)
+	fmt.Println("searchURL222:", searchURL)
 	maxRetries := 7
 	for tries := 0; tries < maxRetries; tries++ {
 		content, err := c.makeRequest(searchURL)		
@@ -133,7 +132,7 @@ func (c *SearchClient) makeRequest(url string) (string, error) {
 	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 	req.Header.Set("Accept-Language", "en-US,en;q=0.5")
 	req.Header.Set("Connection", "keep-alive")
-	req.Header.Set("Cookie", "AEC=AVcja2e0osgVZ2MvTTHJYpLp4yhID9N0TRFsReOdxd5tCSFUs7NPTSRuZQ; NID=521=NQPOecq6prPLWgFgmx7jyla-RUBYpeKwu6oNkRIf6m9rusePsivbTTJ_f9l4cNw2SlRKcJBQBr_LayeW8ruNTP18Qb7KgkTa5yMmcns5yFZwybs1FdxMmLZ9Am9Ae9bs9yKWsuQBQV84bO_fokHv0Sqn6IbXAsng725pMDWGFbJC7Sb02xzd8Ahl0RE4lLGavVeV1G85n7zGbnFNKqkeVkbVZXm8zkwoNv-mKcqea3_oo9eIikQb7w1ZeeECNMv-e-duQio")
+	req.Header.Set("Cookie", "AEC=AVcja2e2lva8RphEKKrgHypgjaGD0yBusVvm6Bd7i08hZB04B--ypO1YdQ; NID=523=fZJNJsh8FeM18nqubFvmFa7JFzysrUmrYJaeyf0O_yIH0Zq3kdI3w50-wT19Tr4WCpuU5F5yqbu_PT8p4BxXeDfxDHffL0GcXa7ytArAdq53lzFJVjZjxmVd5PNZ8EAqtEv69bIZdM2Py73HalPjpxIsH_o9HcXG_ES1SOv-V75FqOsG_-vjpT_W_St3cXseudPSAASH5sqWPfFY8kqWeBo_oNlo1-HUgauE_tJxl_XhAjWMXiWhDxQH7thcvDsie1ja")
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
