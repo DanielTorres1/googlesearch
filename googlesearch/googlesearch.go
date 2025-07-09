@@ -72,8 +72,9 @@ func (c *SearchClient) Search(opts SearchOptions) (string, error) {
 	if err := c.buildClient(); err != nil {
 		return "", err
 	}
+ 
 
-	searchURL := fmt.Sprintf("%s/search?q=%s&oq=%s&num=100&filter=0&sourceid=chrome&ie=UTF-8&sca_esv=586bf82e9e87a87a&emsg=SG_REL&sei=UdMeaPmxOIDk5NoP39HA-QM",
+	searchURL := fmt.Sprintf("%s/search?q=%s&oq=%s&num=100&filter=0&sourceid=chrome&client=gws-wiz&xssi=t&gs_pcrt=undefined&hl=es-419&authuser=0&psi=EOhuaO_wManY5OUP0uzO0Q8.1752098822626&dpr=1",
 		c.GoogleURL, url.QueryEscape(opts.Keyword), url.QueryEscape(opts.Keyword))
 
 	if opts.Start != "" {
@@ -86,7 +87,7 @@ func (c *SearchClient) Search(opts SearchOptions) (string, error) {
 		searchURL += "&hl=" + opts.Lang
 	}
 
-	fmt.Println("searchURL222:", searchURL)
+	fmt.Println("searchURL:", searchURL)
 	maxRetries := 7
 	for tries := 0; tries < maxRetries; tries++ {
 		content, err := c.makeRequest(searchURL)		
@@ -132,7 +133,7 @@ func (c *SearchClient) makeRequest(url string) (string, error) {
 	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 	req.Header.Set("Accept-Language", "en-US,en;q=0.5")
 	req.Header.Set("Connection", "keep-alive")
-	req.Header.Set("Cookie", "AEC=AVcja2e2lva8RphEKKrgHypgjaGD0yBusVvm6Bd7i08hZB04B--ypO1YdQ; NID=523=fZJNJsh8FeM18nqubFvmFa7JFzysrUmrYJaeyf0O_yIH0Zq3kdI3w50-wT19Tr4WCpuU5F5yqbu_PT8p4BxXeDfxDHffL0GcXa7ytArAdq53lzFJVjZjxmVd5PNZ8EAqtEv69bIZdM2Py73HalPjpxIsH_o9HcXG_ES1SOv-V75FqOsG_-vjpT_W_St3cXseudPSAASH5sqWPfFY8kqWeBo_oNlo1-HUgauE_tJxl_XhAjWMXiWhDxQH7thcvDsie1ja")
+	req.Header.Set("Cookie", "AEC=AVh_V2hgWHyb7yYXTvObGd807NTQpQgAWbRUF3TYYmEL9aNFbgJRAA3AsA; NID=525=DTGsGtcyc8VZ1Rk4YeaY7kiHUpsMOhHRXx5i6a6hWsDO__jFSdRDqzkvipFMn5DhXEjqU9mNlEsbykgJfZjB8Ix1fXh9S6EGSgVzuPeGCQHRQvGbuqkUzxw5s3_QbSJW5YFRMX8oQSrfkFJJnwJibUPEK8eQU-ljNZ8sy6W0Gm-iugrFqwHBhYvHcF5XouoeMijqL2OpiNJCH0_UF63_cAtu8R5kOYoQiKSPFT0Zd9y96K5fJmbE_C3q04r_tlc8Oa-MpIY")
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
