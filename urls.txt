@@ -1,0 +1,10 @@
+https://dimse.cenepred.gob.pe/
+https://sigrid.cenepred.gob.pe/sigridv3/register
+https://sigrid.cenepred.gob.pe/sigridv3/evar
+https://dimse.cenepred.gob.pe/simse/normativas
+https://sigrid.cenepred.gob.pe/sigridv3/escenarios
+https://dimse.cenepred.gob.pe/simse/directorio_mapas
+https://sigrid.cenepred.gob.pe/sigridv3/drones
+https://dimse.cenepred.gob.pe/simse/glosario
+https://dimse.cenepred.gob.pe/simse/er_trimestral
+https://sigrid.cenepred.gob.pe/sigridv3/login
