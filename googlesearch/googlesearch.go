@@ -25,12 +25,13 @@ type SearchClient struct {
 
 // SearchOptions contains the parameters for performing a search
 type SearchOptions struct {
-	Keyword  string
-	Date     string
-	Lang     string
-	Filter   string
-	Start    string
-	LogFile  string
+	Keyword string
+	Date    string
+	Lang    string
+	Filter  string
+	Start   string
+	LogFile string
+	Cookie  string
 }
 
 var userAgents = []string{
@@ -56,23 +57,23 @@ func (c *SearchClient) SetProxy(host, port, user, pass string) {
 
 // buildClient initializes the HTTP client
 func (c *SearchClient) buildClient() error {
-    if c.httpClient != nil {
-        return nil
-    }
+	if c.httpClient != nil {
+		return nil
+	}
 
-    c.httpClient = &http.Client{
-        Transport: &http.Transport{},
-        Timeout:   10 * time.Second,
-    }
+	c.httpClient = &http.Client{
+		Transport: &http.Transport{},
+		Timeout:   10 * time.Second,
+	}
 
-    return nil
+	return nil
 }
+
 // Search performs a Google search with the specified options
 func (c *SearchClient) Search(opts SearchOptions) (string, error) {
 	if err := c.buildClient(); err != nil {
 		return "", err
 	}
- 
 
 	searchURL := fmt.Sprintf("%s/search?q=%s&oq=%s&num=100&filter=0&sourceid=chrome&client=gws-wiz&xssi=t&gs_pcrt=undefined&hl=es-419&authuser=0&psi=EOhuaO_wManY5OUP0uzO0Q8.1752098822626&dpr=1",
 		c.GoogleURL, url.QueryEscape(opts.Keyword), url.QueryEscape(opts.Keyword))
@@ -90,7 +91,7 @@ func (c *SearchClient) Search(opts SearchOptions) (string, error) {
 	fmt.Println("searchURL:", searchURL)
 	maxRetries := 7
 	for tries := 0; tries < maxRetries; tries++ {
-		content, err := c.makeRequest(searchURL)		
+		content, err := c.makeRequest(searchURL, opts.Cookie)
 		if err != nil {
 			if tries == maxRetries-1 {
 				return "", err
@@ -123,7 +124,7 @@ func (c *SearchClient) Search(opts SearchOptions) (string, error) {
 	return "", fmt.Errorf("max retries exceeded")
 }
 
-func (c *SearchClient) makeRequest(url string) (string, error) {
+func (c *SearchClient) makeRequest(url string, cookie string) (string, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return "", err
@@ -133,7 +134,9 @@ func (c *SearchClient) makeRequest(url string) (string, error) {
 	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 	req.Header.Set("Accept-Language", "en-US,en;q=0.5")
 	req.Header.Set("Connection", "keep-alive")
-	req.Header.Set("Cookie", "NID=525=HUQSsuvmcKb3JsdT6Qgpa5O3SJDmB_u6NxSTgqOu6XLoU4umjYYvExY74HTzfw_ubUcwJiwTKNeF3FsEESQ1wRp321Sj7HmT9q484F2FKbjYCUqlmBeIAsedOCvEY7PZB3P4FTTar8ZpKYp4pmXv2-_IXFWqUz36gwxfQ2Exk31-tOOU4_A4x-SRmGu0F4pKi24go5GbFHs_7Omuq_JDGpf5wyQpmuxH6JxNZosnchbSMdZDnuaKmWzLpZut-uBhx38m3Vb2KBsaKhh6oAuCI-ycXmETJlg_e_Xoj5z96fsbQnh7mEqWgrCXNCcb3CE1jxvd1WbfMyzjhXA6CCk-kbS6YyoQKogDRH8GUE_MkPvB8BPNJIqTNUCScX2TmNAkVriy7IXXzzWAjJuZQuoxCpto69QSS670rAA91w1EOUHdJyTk_gbvBt6KQNI3v2omYvFjVls5AdyAA8sgkpbPZ6eh1ouOzmDovAWPrKGd7PpOChKgEj54964DeQrChWGgQ-sZyIVoo_RxqmXZz-nGRD2sbSv8tMSQS0wCyMnRE33ujO_2PuMZP-vq2h5CJ3P3rC3Vnng4PZO0JxmWDo-v85z1728fEWiqdzW0z6am_-gDZXJqEb6wCeZGTCoLl31-lz3gQ7jgFvBMfYTTVN5XgHhoHUNE5rFA-VkKdT-eQtuYGFrqfykoQ6CZIb1bqs0pxbO4SJoXMdMLqq_rb-B0oExv; SID=g.a000zghD42d6W_oilJlqlMyRLD6ONGOh5bKnv6CTvKPDJeRQrJZUGrhgPbHmP-1Qbgq6HCwWeQACgYKAdQSARYSFQHGX2MiMy6zAaJumcboInL7S_uuyxoVAUF8yKrVdXBA3z9P8FD9ABOfoDF10076; __Secure-1PSID=g.a000zghD42d6W_oilJlqlMyRLD6ONGOh5bKnv6CTvKPDJeRQrJZUbVkAf28rCHm82_BFRqia7QACgYKARcSARYSFQHGX2Mi0PA_wllCFBg5NLDfIXkGYRoVAUF8yKqkHVuiOW22mm0zgdE1VJHD0076; __Secure-3PSID=g.a000zghD42d6W_oilJlqlMyRLD6ONGOh5bKnv6CTvKPDJeRQrJZUnTW9jMkz_GKMGT7dSh_1oQACgYKAfgSARYSFQHGX2MiUfK1nLsWdZ6PYlhMnY6NmxoVAUF8yKrGmn3tcU4QeJtqfVbPdeFo0076; HSID=AT0xWuqN_ZbZHp1lc; SSID=AROFzJ7luHGH2KbdO; APISID=9oo7Zj8EGqZrBpZW/AMoX0g0G-COrqxxLI; SAPISID=KZv6_BT4VhIXfrK2/AQ9Ewys7Z6IpDbHbJ; __Secure-1PAPISID=KZv6_BT4VhIXfrK2/AQ9Ewys7Z6IpDbHbJ; __Secure-3PAPISID=KZv6_BT4VhIXfrK2/AQ9Ewys7Z6IpDbHbJ; SIDCC=AKEyXzXWcO8sQXBr-Vc286QT656NDLtlUGcRIaPnXh9Ld1In3rrWhJvYA6wp0tg993Srbmw-Eg; __Secure-1PSIDCC=AKEyXzVP_fMWZ0MVIppKp77IEgoRubgg6aIbCjqbrh20jraf5ETupEelyamcl3IZv1gQ96MfJ_s; __Secure-3PSIDCC=AKEyXzX5kKvJw-ViwhZvqMH98glYHs2yZ1DpS_Hi_2rwHx6c036VhrXECwetxEVfYNqb7M1Whg; SEARCH_SAMESITE=CgQIzJ4B; __Secure-1PSIDTS=sidts-CjEB5H03P5uT_6DFtaS17CIHJquQF9v-xfv1urICe7UfSpLB29MZmhqfzEk3O82PzOTkEAA; __Secure-3PSIDTS=sidts-CjEB5H03P5uT_6DFtaS17CIHJquQF9v-xfv1urICe7UfSpLB29MZmhqfzEk3O82PzOTkEAA; AEC=AVh_V2hrf69BxmZcJ9Jq7a34arixY0w-UlQOcW_pqgTyzMaP9s6VR5sMXQ; DV=c-k8kego3cBrkFjbmuSQit54DBeqh1luvY3uL0GCIgAAACBI3RpFx616LQAAAOzSLZNGY_RtMQAAAKeOMuqW8-1pDgAAgPr1jKyGxWsNBQAAAA")
+	if cookie != "" {
+		req.Header.Set("Cookie", cookie)
+	}
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
@@ -150,41 +153,41 @@ func (c *SearchClient) makeRequest(url string) (string, error) {
 }
 
 func extractURLs(content string) []string {
-    // Regular expression pattern for valid URLs, excluding JavaScript and unwanted patterns
-    urlPattern := regexp.MustCompile(`https?://(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)`)
-    
-    // Find all matches in the content
-    matches := urlPattern.FindAllString(content, -1)
-    
-    // Create a map to store unique URLs
-    uniqueURLs := make(map[string]bool)
-    
-    // Create a slice to store the final result
-    var results []string
-    
-    // Process each match
-    for _, match := range matches {
-        // Clean up the URL
-        url := strings.TrimRight(match, ".,!?:;'\"&amp")
-        
-        // Skip if URL contains unwanted patterns
-        if strings.Contains(url, "google.com") ||
-           strings.Contains(url, "gstatic.com") ||
-           strings.Contains(url, "accounts.google") ||
-           strings.Contains(url, "support.google") ||
-		   strings.Contains(url, "w3.org") ||
-           strings.Contains(url, "policies.google") {			
-            continue
-        }
-        
-        // Add URL to results if we haven't seen it before
-        if !uniqueURLs[url] {
-            uniqueURLs[url] = true
-            results = append(results, url)
-        }
-    }
-    
-    return results
+	// Regular expression pattern for valid URLs, excluding JavaScript and unwanted patterns
+	urlPattern := regexp.MustCompile(`https?://(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)`)
+
+	// Find all matches in the content
+	matches := urlPattern.FindAllString(content, -1)
+
+	// Create a map to store unique URLs
+	uniqueURLs := make(map[string]bool)
+
+	// Create a slice to store the final result
+	var results []string
+
+	// Process each match
+	for _, match := range matches {
+		// Clean up the URL
+		url := strings.TrimRight(match, ".,!?:;'\"&amp")
+
+		// Skip if URL contains unwanted patterns
+		if strings.Contains(url, "google.com") ||
+			strings.Contains(url, "gstatic.com") ||
+			strings.Contains(url, "accounts.google") ||
+			strings.Contains(url, "support.google") ||
+			strings.Contains(url, "w3.org") ||
+			strings.Contains(url, "policies.google") {
+			continue
+		}
+
+		// Add URL to results if we haven't seen it before
+		if !uniqueURLs[url] {
+			uniqueURLs[url] = true
+			results = append(results, url)
+		}
+	}
+
+	return results
 }
 
 func getRandomUserAgent() string {

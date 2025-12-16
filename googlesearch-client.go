@@ -4,13 +4,14 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"googlesearch/googlesearch"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
 	"github.com/fatih/color"
-	"googlesearch/googlesearch"
 )
 
 const banner = `
@@ -19,15 +20,17 @@ Google search
 Autor: Daniel Torres Sandi
 `
 const googleURL = "https://ipt5gxa9dh.execute-api.us-east-1.amazonaws.com/googleProxy"
+
 //const googleURL = "https://google.com"
 
 var (
-	term     = flag.String("t", "", "Search term")
-	outFile  = flag.String("o", "", "Output file")
-	logFile  = flag.String("l", "", "Log file")
-	date     = flag.String("d", "", "Date filter")
-	help     = flag.Bool("h", false, "Show help")
-	debug    = false
+	term    = flag.String("t", "", "Search term")
+	outFile = flag.String("o", "", "Output file")
+	logFile = flag.String("l", "", "Log file")
+	date    = flag.String("d", "", "Date filter")
+	cookie  = flag.String("c", "", "Cookie string")
+	help    = flag.Bool("h", false, "Show help")
+	debug   = false
 )
 
 func usage() {
@@ -38,6 +41,7 @@ func usage() {
 	fmt.Println("-h : Help")
 	fmt.Println("-d : Date")
 	fmt.Println("-l : Log file")
+	fmt.Println("-c : Cookie string")
 	fmt.Println("Example: googlesearch-client -t 'site:gob.bo' -l google2.html -o lista.txt")
 }
 
@@ -65,10 +69,11 @@ func main() {
 
 		// Perform search
 		opts := googlesearch.SearchOptions{
-			Keyword:  *term,
-			Start:    strconv.Itoa(page * 100),
-			LogFile:  *logFile,
-			Date:     *date,
+			Keyword: *term,
+			Start:   strconv.Itoa(page * 100),
+			LogFile: *logFile,
+			Date:    *date,
+			Cookie:  *cookie,
 		}
 
 		list, err := client.Search(opts)
