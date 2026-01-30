@@ -37,7 +37,7 @@ class SearchClient:
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36",
     ]
     
-    def __init__(self):
+    def __init__(self, profile_dir: Optional[str] = None, skip_login_prompt: bool = False):
         self.proxy_host: Optional[str] = None
         self.proxy_port: Optional[str] = None
         self.proxy_user: Optional[str] = None
@@ -45,8 +45,16 @@ class SearchClient:
         self.google_url: str = "https://google.com"
         self.user_agent: str = self._get_random_user_agent()
         self.driver: Optional[webdriver.Chrome] = None
-        # Use a unique temp directory for each session to avoid conflicts
-        self.profile_dir: str = tempfile.mkdtemp(prefix="chrome_profile_")
+        self.skip_login_prompt: bool = skip_login_prompt
+        
+        # Use custom profile dir if provided, otherwise create a persistent one in home directory
+        if profile_dir:
+            self.profile_dir = profile_dir
+        else:
+            # Create a persistent profile directory in ~/.chrome_google_search
+            home_dir = os.path.expanduser("~")
+            self.profile_dir = os.path.join(home_dir, ".chrome_google_search")
+            os.makedirs(self.profile_dir, exist_ok=True)
     
     def _get_random_user_agent(self) -> str:
         """Get a random user agent from the list"""
@@ -76,17 +84,34 @@ class SearchClient:
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--disable-blink-features=AutomationControlled')
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option("excludeSwitches", ["enable-automation", "enable-logging"])
         options.add_experimental_option('useAutomationExtension', False)
         
         # Use persistent profile to maintain cookies and session
         options.add_argument(f'--user-data-dir={self.profile_dir}')
         
-        # Additional stealth options
+        # Enhanced stealth options to bypass Google login detection
         options.add_argument('--disable-infobars')
         options.add_argument('--disable-notifications')
         options.add_argument('--disable-popup-blocking')
         options.add_argument('--disable-save-password-bubble')
+        options.add_argument('--disable-extensions')
+        options.add_argument('--disable-web-security')
+        options.add_argument('--allow-running-insecure-content')
+        options.add_argument('--disable-features=VizDisplayCompositor')
+        options.add_argument('--disable-features=IsolateOrigins,site-per-process')
+        options.add_argument('--disable-site-isolation-trials')
+        options.add_argument('--disable-features=BlockInsecurePrivateNetworkRequests')
+        
+        # Set preferences to make browser appear more legitimate
+        prefs = {
+            "credentials_enable_service": False,
+            "profile.password_manager_enabled": False,
+            "profile.default_content_setting_values.notifications": 2,
+            "excludeSwitches": ["enable-automation"],
+            "useAutomationExtension": False
+        }
+        options.add_experimental_option("prefs", prefs)
         
         # Randomize window size to appear more human-like
         window_width = random.randint(1200, 1600)
@@ -107,7 +132,70 @@ class SearchClient:
         self.driver.execute_cdp_cmd('Network.setUserAgentOverride', {
             "userAgent": self.user_agent
         })
-        self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+        
+        # Enhanced JavaScript to mask automation - execute multiple stealth scripts
+        stealth_js = """
+        // Overwrite the `navigator.webdriver` property
+        Object.defineProperty(navigator, 'webdriver', {
+            get: () => undefined
+        });
+        
+        // Overwrite the `navigator.plugins` to appear like a real browser
+        Object.defineProperty(navigator, 'plugins', {
+            get: () => [1, 2, 3, 4, 5]
+        });
+        
+        // Overwrite the `navigator.languages` to appear more realistic
+        Object.defineProperty(navigator, 'languages', {
+            get: () => ['en-US', 'en']
+        });
+        
+        // Mock the permissions API
+        const originalQuery = window.navigator.permissions.query;
+        window.navigator.permissions.query = (parameters) => (
+            parameters.name === 'notifications' ?
+                Promise.resolve({ state: Notification.permission }) :
+                originalQuery(parameters)
+        );
+        
+        // Remove traces of automation
+        delete window.cdc_adoQpoasnfa76pfcZLmcfl_Array;
+        delete window.cdc_adoQpoasnfa76pfcZLmcfl_Promise;
+        delete window.cdc_adoQpoasnfa76pfcZLmcfl_Symbol;
+        """
+        
+        self.driver.execute_script(stealth_js)
+        
+        # Navigate to Google/Gmail on first launch to allow user to log in
+        # This reduces captcha challenges when using a logged-in Google account
+        if not self.skip_login_prompt:
+            # Check if this is a fresh profile (no login yet)
+            profile_first_run = os.path.join(self.profile_dir, "First Run")
+            is_first_run = not os.path.exists(profile_first_run)
+            
+            if is_first_run:
+                print("\n" + "="*80)
+                print("⚠️  IMPORTANT: Manual Login Required")
+                print("="*80)
+                print("Google blocks automated browsers from logging in.")
+                print("")
+                print("SOLUTION: You need to log in manually using a REGULAR Chrome browser.")
+                print("")
+                print("Follow these steps:")
+                print("1. Open a NEW regular Chrome browser window (NOT this automated one)")
+                print("2. Use this command in another terminal:")
+                print(f"   google-chrome --user-data-dir=\"{self.profile_dir}\"")
+                print("3. In that browser, log into your Google account (gmail.com)")
+                print("4. Close that browser window")
+                print("5. Come back here and press ENTER to continue")
+                print("")
+                print("This profile will be reused, so you only need to do this ONCE.")
+                print("="*80 + "\n")
+                
+                input("Press ENTER after you've logged in using the regular Chrome browser...")
+                print("\nContinuing with search operations...\n")
+            else:
+                print("\n✓ Using existing Chrome profile (already logged in)\n")
     
     def search(self, keyword: str, date: str = "", lang: str = "", 
                start: str = "0", log_file: str = "", cookie: str = "") -> str:
