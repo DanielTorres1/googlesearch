@@ -7,6 +7,7 @@ Author: Daniel Torres Sandi
 
 import argparse
 import os
+import random
 import re
 import sys
 import time
@@ -54,8 +55,8 @@ def check_next_page(log_file: str) -> bool:
         with open(log_file, 'r', encoding='utf-8') as f:
             content = f.read()
         
-        # Check for next page indicators
-        pattern = re.compile(r'(?i)Next &gt;|More results|>&gt;</')
+        # Check for next page indicators (including Spanish and aria-labels)
+        pattern = re.compile(r'(?i)Next &gt;|Siguiente &gt;|More results|>&gt;</|aria-label="Página siguiente"|aria-label="Next page"')
         matches = pattern.findall(content)
         
         if DEBUG:
@@ -65,6 +66,7 @@ def check_next_page(log_file: str) -> bool:
     except Exception as e:
         print(f"Error reading log file: {e}")
         return False
+
 
 
 def main():
@@ -98,49 +100,93 @@ def main():
     client = SearchClient()
     client.google_url = GOOGLE_URL
     
+    all_unique_urls = []
+    seen_urls = set()
+    
     page = 0
     try:
-        while True:
+        while len(all_unique_urls) < 100:
             print_page = page + 1
-            print(f"\t\t[+] page: {print_page}")
+            print(f"\t\t[+] page: {print_page} (URLs found: {len(all_unique_urls)})")
             
-            # Perform search
-            start = str(page * 100)
+            # Format unique log filename for this page to avoid cache conflict
+            if args.log:
+                base, ext = os.path.splitext(args.log)
+                page_log_file = f"{base}_{print_page}{ext}"
+                is_temp_log = False
+            else:
+                page_log_file = f"temp_search_log_{print_page}.html"
+                is_temp_log = True
+            
+            # Perform search with dynamic start offset based on current unique URLs found
+            start = str(len(all_unique_urls))
             urls_str = client.search(
                 keyword=args.term,
                 start=start,
-                log_file=args.log,
+                log_file=page_log_file,
                 date=args.date,
                 cookie=args.cookie
             )
             
+            if not urls_str:
+                print("\t\t[-] No URLs returned on this page.")
+                break
+                
             # Process and save results
             urls = urls_str.split(';')
-            if args.output:
-                append_to_file(args.output, urls)
-            
+            new_urls_on_page = []
             for url in urls:
+                url = url.strip()
+                if url and url not in seen_urls:
+                    seen_urls.add(url)
+                    all_unique_urls.append(url)
+                    new_urls_on_page.append(url)
+            
+            if not new_urls_on_page:
+                print("\t\t[-] No new unique URLs found on this page. Stopping.")
+                break
+                
+            if args.output:
+                append_to_file(args.output, new_urls_on_page)
+            
+            for url in new_urls_on_page:
                 print(url)
             
             # Check for next page
-            if args.log:
-                has_next_page = check_next_page(args.log)
-                if not has_next_page:
-                    break
-            else:
-                # If no log file, just do one page
+            has_next_page = check_next_page(page_log_file)
+            
+            # Clean up temp file immediately after checking if it was a temp log
+            if is_temp_log and os.path.exists(page_log_file):
+                try:
+                    os.remove(page_log_file)
+                except Exception:
+                    pass
+                    
+            if not has_next_page:
+                print("\t\t[-] No next page indicator found.")
                 break
             
             page += 1
-            time.sleep(1)
-    
+            # Random sleep delay (5-10 seconds) to appear more human-like and avoid CAPTCHAs
+            wait_time = random.uniform(5.0, 10.0)
+            time.sleep(wait_time)
+            
     except KeyboardInterrupt:
         print("\n\nInterrupted by user")
     except Exception as e:
         print(f"Error performing search: {e}")
         sys.exit(1)
     finally:
-        # Clean up
+        # Clean up any leftover temp files
+        if not args.log:
+            for p in range(1, page + 2):
+                temp_file = f"temp_search_log_{p}.html"
+                if os.path.exists(temp_file):
+                    try:
+                        os.remove(temp_file)
+                    except Exception:
+                        pass
+        # Clean up client
         client.close()
 
 

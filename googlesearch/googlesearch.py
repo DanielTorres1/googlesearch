@@ -32,10 +32,12 @@ class SearchClient:
     """Google search client using Selenium WebDriver"""
     
     USER_AGENTS = [
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/120.0"
     ]
+
     
     def __init__(self, profile_dir: Optional[str] = None, skip_login_prompt: bool = False):
         self.proxy_host: Optional[str] = None
@@ -79,9 +81,10 @@ class SearchClient:
         options.add_argument(f'user-agent={self.user_agent}')
         
         # VISIBLE MODE - Remove headless to allow manual CAPTCHA solving
-        # options.add_argument('--headless')  # Commented out for visible mode
+        options.add_argument('--headless')  # Enabled for headless environment
         
         options.add_argument('--no-sandbox')
+        options.add_argument('--disable-gpu')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--disable-blink-features=AutomationControlled')
         options.add_experimental_option("excludeSwitches", ["enable-automation", "enable-logging"])
