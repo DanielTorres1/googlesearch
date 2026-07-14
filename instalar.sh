@@ -55,20 +55,6 @@ cp googlesearch-client.py /usr/bin/
 chmod +x /usr/bin/googlesearch-client.py
 cp -r googlesearch /usr/bin/
 
-# Solicitar logeo por primera vez si no existe el perfil de Chrome
-PROFILE_DIR="$HOME/.chrome_google_search"
-if [ ! -d "$PROFILE_DIR" ]; then
-    echo -e "$OKBLUE\n========================================================================"
-    echo -e "⚠️  IMPORTANTE: Inicio de Sesión Manual Requerido"
-    echo -e "========================================================================"
-    echo -e "Para evitar bloqueos y CAPTCHAs, por favor inicia sesión manualmente:"
-    echo -e "\n1. Ejecuta este comando en otra terminal para abrir Chrome:"
-    echo -e "   google-chrome --user-data-dir=\"$PROFILE_DIR\""
-    echo -e "\n2. Inicia sesión con tu cuenta de Google en la ventana que se abra."
-    echo -e "========================================================================"
-    read -p "Presiona [ENTER] una vez que hayas iniciado sesión para terminar la instalación..."
-fi
-
 echo -e "$OKGREEN [+] Instalación completada! $RESET"
 
 
